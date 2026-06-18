@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MARKET USS</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- ШАПКА -->
+        <header class="header">
+            <button class="btn-close" onclick="closeApp()">✕ Закрыть</button>
+            <div class="logo">
+                <img src="https://via.placeholder.com/40" alt="Logo" id="logo-img">
+                <span>MARKET USS</span>
+            </div>
+            <button class="btn-menu">☰</button>
+        </header>
+
+        <!-- ПОИСК -->
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Поиск товаров..." oninput="searchProducts()">
+            <button class="btn-search">🔍</button>
+        </div>
+
+        <!-- ФИЛЬТРЫ -->
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterCategory('all')">Все</button>
+            <button class="filter-btn" onclick="filterCategory('Жидкости')">Жидкости</button>
+            <button class="filter-btn" onclick="filterCategory('Устройства')">Устройства</button>
+            <button class="filter-btn" onclick="filterCategory('Расходники')">Расходники</button>
+        </div>
+
+        <!-- КАТАЛОГ -->
+        <main class="catalog" id="catalog">
+            <!-- Товары загружаются динамически -->
+        </main>
+
+        <!-- КНОПКА КОРЗИНЫ -->
+        <button class="cart-fab" onclick="openCart()">
+            🛒 <span id="cart-count">0</span>
+        </button>
+
+        <!-- МОДАЛКА ТОВАРА -->
+        <div class="modal" id="product-modal">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()">✕</button>
+                <img id="modal-img" src="" alt="">
+                <h2 id="modal-title"></h2>
+                <p id="modal-desc"></p>
+                <div class="modal-price">
+                    <span id="modal-price"></span>
+                    <span id="modal-old-price"></span>
+                </div>
+                <button class="btn-add-cart" onclick="addToCartFromModal()">В корзину</button>
+            </div>
+        </div>
+
+        <!-- КОРЗИНА -->
+        <div class="drawer" id="cart-drawer">
+            <div class="drawer-header">
+                <h2>Корзина</h2>
+                <button onclick="closeCart()">✕</button>
+            </div>
+            <div class="drawer-body" id="cart-items">
+                <!-- Элементы корзины -->
+            </div>
+            <div class="drawer-footer">
+                <div class="total">Итого: <span id="cart-total">0 ₽</span></div>
+                <button class="btn-checkout" onclick="checkout()">Оформить заказ</button>
+            </div>
+        </div>
+
+        <!-- АДМИН-ПАНЕЛЬ -->
+        <div class="admin-panel" id="admin-panel" style="display:none;">
+            <h2>🛠️ Админ-панель</h2>
+            <div class="admin-form">
+                <h3>Добавить товар</h3>
+                <input type="text" id="admin-name" placeholder="Название">
+                <input type="text" id="admin-desc" placeholder="Описание">
+                <input type="number" id="admin-price" placeholder="Цена">
+                <input type="number" id="admin-old-price" placeholder="Старая цена (необязательно)">
+                <input type="text" id="admin-image" placeholder="URL изображения">
+                <select id="admin-category">
+                    <option value="Жидкости">Жидкости</option>
+                    <option value="Устройства">Устройства</option>
+                    <option value="Расходники">Расходники</option>
+                    <option value="Другое">Другое</option>
+                </select>
+                <input type="number" id="admin-stock" placeholder="Количество на складе">
+                <button onclick="addProduct()">➕ Добавить товар</button>
+            </div>
+            <div class="admin-list" id="admin-products">
+                <!-- Список товаров для управления -->
+            </div>
+        </div>
+
+        <!-- НАВИГАЦИЯ СНИЗУ -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" onclick="showPage('home')">
+                <span>🏠</span>
+                <span>Главная</span>
+            </button>
+            <button class="nav-btn" onclick="showPage('favorites')">
+                <span>❤️</span>
+                <span>Избранное</span>
+            </button>
+            <button class="nav-btn" onclick="openCart()">
+                <span>🛒</span>
+                <span>Корзина</span>
+            </button>
+            <button class="nav-btn" onclick="toggleAdmin()">
+                <span>⚙️</span>
+                <span>Профиль</span>
+            </button>
+        </nav>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
