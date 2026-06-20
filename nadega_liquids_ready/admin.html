@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Админка — Nadega Liquids</title>
+<link rel="icon" type="image/jpeg" href="logo.jpg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --neon-cyan: #00f0ff;
+  --neon-pink: #ff00aa;
+  --neon-purple: #8b5cf6;
+  --dark-bg: #0a0a0f;
+  --card-bg: rgba(20, 20, 35, 0.7);
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --text: #e0e0e0;
+  --text-dim: #888;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--dark-bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.smoke-bg {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: -1;
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(255, 0, 170, 0.08) 0%, transparent 50%),
+    linear-gradient(180deg, #0a0a0f 0%, #0f0f1a 50%, #0a0a0f 100%);
+}
+
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0.8rem 1.5rem;
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  text-decoration: none;
+}
+
+.logo-img {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+.logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 2px;
+}
+
+.logo-text span { font-weight: 400; opacity: 0.8; }
+
+.glass-btn {
+  position: relative;
+  padding: 0.7rem 1.8rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2), 0 0 20px rgba(0, 240, 255, 0.1);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.glass-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3), 0 0 30px rgba(0, 240, 255, 0.2);
+  border-color: rgba(0, 240, 255, 0.4);
+}
+
+.glass-btn.accent {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.15));
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+.back-btn { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
+
+.admin-container {
+  padding: 8rem 1.5rem 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.admin-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+}
+
+.login-form, .admin-panel {
+  background: var(--card-bg);
+  border-radius: 24px;
+  border: 1.5px solid var(--glass-border);
+  padding: 2.5rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.login-form h2, .admin-panel h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  -webkit-appearance: none;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+}
+
+.form-group input::placeholder { color: var(--text-dim); }
+
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--glass);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+}
+
+.product-item-info h4 {
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.product-item-info span {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.product-item-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.icon-btn {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.icon-btn:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.icon-btn.danger:hover {
+  border-color: #ff4444;
+  color: #ff4444;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.tab.active {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.15));
+  border-color: rgba(0, 240, 255, 0.3);
+  color: white;
+}
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.2));
+  border: 1px solid var(--neon-cyan);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  z-index: 3000;
+  opacity: 0;
+  transition: all 0.4s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px rgba(0, 240, 255, 0.2);
+  text-align: center;
+}
+
+.toast.active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10,10,15,0.95);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.loading-overlay.hidden { display: none; }
+
+.spinner {
+  width: 50px; height: 50px;
+  border: 3px solid rgba(0, 240, 255, 0.2);
+  border-top-color: var(--neon-cyan);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-overlay p { color: var(--text-dim); font-size: 1rem; }
+
+footer {
+  padding: 3rem 2rem;
+  text-align: center;
+  border-top: 1px solid var(--glass-border);
+  margin-top: 2rem;
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.3));
+}
+
+.footer-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  display: inline-block;
+  letter-spacing: 3px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.footer-links a:hover { color: var(--neon-cyan); }
+
+@media (max-width: 768px) {
+  .admin-container { padding: 7rem 1rem 2rem; }
+  .admin-title { font-size: 1.8rem; }
+  .login-form, .admin-panel { padding: 1.5rem; }
+  .product-item { flex-direction: column; gap: 0.8rem; align-items: flex-start; }
+  .product-item-actions { width: 100%; justify-content: flex-end; }
+}
+
+::selection { background: rgba(0, 240, 255, 0.3); color: white; }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p>Загрузка...</p>
+</div>
+
+<div class="smoke-bg"></div>
+
+<header>
+  <a href="/" class="logo-wrap">
+    <img src="logo.jpg" alt="Nadega Liquids" class="logo-img">
+    <div class="logo-text">NADEGA <span>LIQUIDS</span></div>
+  </a>
+  <a href="/" class="glass-btn back-btn">← На сайт</a>
+</header>
+
+<div class="admin-container">
+  <h1 class="admin-title">Админ-панель</h1>
+
+  <div id="loginSection">
+    <div class="login-form">
+      <h2>🔐 Вход</h2>
+      <div class="form-group">
+        <label>Пароль</label>
+        <input type="password" id="adminPassword" placeholder="Введите пароль">
+      </div>
+      <button class="glass-btn accent" style="width:100%; padding:1rem" onclick="login()">Войти</button>
+    </div>
+  </div>
+
+  <div id="adminSection" style="display:none">
+    <div class="admin-panel">
+      <h2>Управление товарами</h2>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('add')">Добавить</div>
+        <div class="tab" onclick="switchTab('list')">Список</div>
+      </div>
+
+      <div id="addTab">
+        <div class="form-group">
+          <label>Название</label>
+          <input type="text" id="pName" placeholder="Название товара">
+        </div>
+        <div class="form-group">
+          <label>Категория</label>
+          <select id="pCategory">
+            <option value="Жидкости">Жидкости</option>
+            <option value="Одноразки">Одноразки</option>
+            <option value="POD-системы">POD-системы</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Цена (₽)</label>
+          <input type="number" id="pPrice" placeholder="450">
+        </div>
+        <div class="form-group">
+          <label>Описание</label>
+          <textarea id="pDesc" rows="3" placeholder="Описание товара..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Ссылка на изображение</label>
+          <input type="text" id="pImage" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>Дополнительные поля (опционально)</label>
+          <input type="text" id="pNicotine" placeholder="Никотин (например: 3mg)">
+        </div>
+        <div class="form-group">
+          <input type="text" id="pVolume" placeholder="Объём (например: 30ml)">
+        </div>
+        <div class="form-group">
+          <input type="text" id="pPuffs" placeholder="Затяжки (например: 600)">
+        </div>
+        <div class="form-group">
+          <input type="text" id="pFlavor" placeholder="Вкус (например: Blue Razz)">
+        </div>
+        <div class="form-group">
+          <input type="text" id="pBattery" placeholder="Батарея (например: 2000mAh)">
+        </div>
+        <div class="form-group">
+          <input type="text" id="pPower" placeholder="Мощность (например: 80W)">
+        </div>
+        <button class="glass-btn accent" style="width:100%; padding:1rem" onclick="addProduct()">Добавить товар</button>
+      </div>
+
+      <div id="listTab" style="display:none">
+        <div class="product-list" id="productList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">NADEGA LIQUIDS</div>
+  <div class="footer-links">
+    <a href="/">Главная</a>
+    <a href="/liquids">Жидкости</a>
+    <a href="/disposables">Одноразки</a>
+    <a href="/pods">POD-системы</a>
+  </div>
+  <p>© 2026 Nadega Liquids. Все права защищены.</p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBFxNFo-EMhwUr4wnWQXiahNO5FDMTjYJ8",
+  authDomain: "nadegaliquids.firebaseapp.com",
+  databaseURL: "https://nadegaliquids-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "nadegaliquids",
+  storageBucket: "nadegaliquids.firebasestorage.app",
+  messagingSenderId: "993975719679",
+  appId: "1:993975719679:web:5fd2d20e2ccb7cca695eca",
+  measurementId: "G-R7MD054PZG"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const ADMIN_PASS = "admin123";
+
+window.login = function() {
+  const pass = document.getElementById('adminPassword').value;
+  if (pass === ADMIN_PASS) {
+    document.getElementById('loginSection').style.display = 'none';
+    document.getElementById('adminSection').style.display = 'block';
+    showToast('Добро пожаловать, админ!');
+    loadProducts();
+  } else {
+    showToast('Неверный пароль');
+  }
+};
+
+window.switchTab = function(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('addTab').style.display = tab === 'add' ? 'block' : 'none';
+  document.getElementById('listTab').style.display = tab === 'list' ? 'block' : 'none';
+  if (tab === 'list') loadProducts();
+};
+
+window.addProduct = async function() {
+  const name = document.getElementById('pName').value.trim();
+  const category = document.getElementById('pCategory').value;
+  const price = parseInt(document.getElementById('pPrice').value);
+  const desc = document.getElementById('pDesc').value.trim();
+  const image = document.getElementById('pImage').value.trim();
+
+  if (!name || !price || !desc) {
+    showToast('Заполните обязательные поля');
+    return;
+  }
+
+  const productData = {
+    name,
+    category,
+    price,
+    description: desc,
+    image: image || 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop',
+    nicotine: document.getElementById('pNicotine').value.trim() || null,
+    volume: document.getElementById('pVolume').value.trim() || null,
+    puffs: document.getElementById('pPuffs').value.trim() || null,
+    flavor: document.getElementById('pFlavor').value.trim() || null,
+    battery: document.getElementById('pBattery').value.trim() || null,
+    power: document.getElementById('pPower').value.trim() || null,
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    await addDoc(collection(db, "products"), productData);
+    showToast('Товар добавлен в Firebase!');
+
+    // Также сохраняем в localStorage как backup
+    let backup = JSON.parse(localStorage.getItem('nadega_products_backup') || '[]');
+    backup.push({ id: Date.now().toString(), ...productData });
+    localStorage.setItem('nadega_products_backup', JSON.stringify(backup));
+
+    // Очистка формы
+    document.getElementById('pName').value = '';
+    document.getElementById('pPrice').value = '';
+    document.getElementById('pDesc').value = '';
+    document.getElementById('pImage').value = '';
+    document.getElementById('pNicotine').value = '';
+    document.getElementById('pVolume').value = '';
+    document.getElementById('pPuffs').value = '';
+    document.getElementById('pFlavor').value = '';
+    document.getElementById('pBattery').value = '';
+    document.getElementById('pPower').value = '';
+  } catch (e) {
+    console.error(e);
+    showToast('Ошибка: ' + e.message);
+  }
+};
+
+async function loadProducts() {
+  try {
+    const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    const list = document.getElementById('productList');
+
+    if (snapshot.empty) {
+      list.innerHTML = '<div style="text-align:center; color: var(--text-dim); padding: 2rem;">Нет товаров в базе</div>';
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      return;
+    }
+
+    list.innerHTML = '';
+    snapshot.forEach(doc => {
+      const p = doc.data();
+      const item = document.createElement('div');
+      item.className = 'product-item';
+      item.innerHTML = `
+        <div class="product-item-info">
+          <h4>${p.name}</h4>
+          <span>${p.category} — ${p.price} ₽</span>
+        </div>
+        <div class="product-item-actions">
+          <button class="icon-btn danger" onclick="deleteProduct('${doc.id}')">🗑</button>
+        </div>
+      `;
+      list.appendChild(item);
+    });
+  } catch (e) {
+    console.error(e);
+    document.getElementById('productList').innerHTML = '<div style="text-align:center; color: var(--text-dim); padding: 2rem;">Ошибка загрузки из Firebase</div>';
+  } finally {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+  }
+}
+
+window.deleteProduct = async function(id) {
+  if (!confirm('Удалить товар?')) return;
+  try {
+    await deleteDoc(doc(db, "products", id));
+    showToast('Товар удалён');
+    loadProducts();
+  } catch (e) {
+    showToast('Ошибка удаления');
+  }
+};
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('active');
+  setTimeout(() => toast.classList.remove('active'), 3000);
+}
+
+document.getElementById('adminPassword').addEventListener('keypress', e => {
+  if (e.key === 'Enter') login();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nadega Liquids — Премиум вейп-магазин</title>
+<link rel="icon" type="image/jpeg" href="logo.jpg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --neon-cyan: #00f0ff;
+  --neon-pink: #ff00aa;
+  --neon-purple: #8b5cf6;
+  --neon-green: #00ff88;
+  --dark-bg: #0a0a0f;
+  --card-bg: rgba(20, 20, 35, 0.7);
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --text: #e0e0e0;
+  --text-dim: #888;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--dark-bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.smoke-bg {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: -1;
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(255, 0, 170, 0.08) 0%, transparent 50%),
+    linear-gradient(180deg, #0a0a0f 0%, #0f0f1a 50%, #0a0a0f 100%);
+  overflow: hidden;
+}
+
+.smoke-bg::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(0, 240, 255, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(255, 0, 170, 0.03) 0%, transparent 40%);
+  animation: smokeMove 20s ease-in-out infinite;
+}
+
+@keyframes smokeMove {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5%, 3%) rotate(2deg); }
+  50% { transform: translate(-3%, 5%) rotate(-1deg); }
+  75% { transform: translate(2%, -2%) rotate(1deg); }
+}
+
+.particles {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 4px; height: 4px;
+  background: var(--neon-cyan);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: floatUp linear infinite;
+  box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 0.3; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+}
+
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0.8rem 1.5rem;
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  text-decoration: none;
+}
+
+.logo-img {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.logo-wrap:hover .logo-img {
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+  border-color: var(--neon-cyan);
+}
+
+.logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+  letter-spacing: 2px;
+}
+
+.logo-text span { font-weight: 400; opacity: 0.8; }
+
+.glass-btn {
+  position: relative;
+  padding: 0.7rem 1.8rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 
+    0 4px 15px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    0 0 20px rgba(0, 240, 255, 0.1);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.glass-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.glass-btn:hover::before { left: 100%; }
+
+.glass-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 25px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    0 0 30px rgba(0, 240, 255, 0.2);
+  border-color: rgba(0, 240, 255, 0.4);
+}
+
+.glass-btn:active { transform: translateY(0) scale(0.98); }
+
+.glass-btn.accent {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.15));
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+.glass-btn.accent:hover {
+  box-shadow: 
+    0 8px 25px rgba(0,0,0,0.4),
+    0 0 40px rgba(0, 240, 255, 0.3),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+.cart-btn { position: relative; padding: 0.7rem 1.2rem; }
+
+.cart-count {
+  position: absolute;
+  top: -5px; right: -5px;
+  width: 22px; height: 22px;
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
+}
+
+.hero {
+  padding: 8rem 1.5rem 4rem;
+  text-align: center;
+  position: relative;
+}
+
+.hero-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 5rem;
+  font-weight: 900;
+  margin-bottom: 0.8rem;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textGlow 3s ease-in-out infinite alternate;
+  letter-spacing: 6px;
+  line-height: 1.1;
+  position: relative;
+  display: inline-block;
+}
+
+.hero-title::after {
+  content: 'NADEGA LIQUIDS';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: blur(30px);
+  opacity: 0.5;
+  z-index: -1;
+  animation: glowPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+  0% { opacity: 0.3; filter: blur(20px); }
+  100% { opacity: 0.7; filter: blur(40px); }
+}
+
+@keyframes textGlow {
+  0% { filter: brightness(1); text-shadow: 0 0 20px rgba(0, 240, 255, 0.3), 0 0 40px rgba(0, 240, 255, 0.2), 0 0 60px rgba(139, 92, 246, 0.1); }
+  100% { filter: brightness(1.3); text-shadow: 0 0 30px rgba(0, 240, 255, 0.5), 0 0 60px rgba(0, 240, 255, 0.3), 0 0 90px rgba(139, 92, 246, 0.2), 0 0 120px rgba(255, 0, 170, 0.1); }
+}
+
+.hero-subtitle {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--neon-cyan);
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.section-divider {
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-pink), transparent);
+  margin: 0 auto 3rem;
+  border-radius: 3px;
+  opacity: 0.6;
+}
+
+.categories-grid {
+  padding: 0 1.5rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.cat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3.5rem 2rem;
+  background: var(--card-bg);
+  border-radius: 24px;
+  border: 1.5px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  text-decoration: none;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  min-height: 240px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.cat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 24px;
+  padding: 1.5px;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(139, 92, 246, 0.2), rgba(255, 0, 170, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.cat-card:hover::before { opacity: 1; }
+
+.cat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 50px rgba(0, 240, 255, 0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+  border-color: rgba(0, 240, 255, 0.4);
+  background: rgba(20, 20, 40, 0.8);
+}
+
+.cat-card:active { transform: scale(0.98); }
+
+.cat-icon-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(139, 92, 246, 0.1));
+  border: 1.5px solid rgba(0, 240, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: all 0.4s ease;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
+}
+
+.cat-card:hover .cat-icon-wrap {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(139, 92, 246, 0.2));
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 40px rgba(0, 240, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.cat-icon {
+  width: 40px;
+  height: 40px;
+  fill: var(--neon-cyan);
+  transition: all 0.4s ease;
+}
+
+.cat-card:hover .cat-icon {
+  fill: white;
+  filter: drop-shadow(0 0 10px var(--neon-cyan));
+}
+
+.cat-card h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  margin-bottom: 0.7rem;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.cat-card p {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.cat-card .arrow {
+  margin-top: 2rem;
+  font-size: 1.8rem;
+  color: var(--neon-cyan);
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.cat-card:hover .arrow {
+  opacity: 1;
+  transform: translateX(8px);
+  text-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
+}
+
+.features-section {
+  padding: 4rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.feature-item {
+  text-align: center;
+  padding: 2rem;
+  background: var(--card-bg);
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 240, 255, 0.3);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+.feature-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 1rem;
+  fill: var(--neon-cyan);
+  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.3));
+}
+
+.feature-item h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: white;
+  letter-spacing: 1px;
+}
+
+.feature-item p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+footer {
+  padding: 4rem 2rem 2rem;
+  text-align: center;
+  border-top: 1px solid var(--glass-border);
+  margin-top: 2rem;
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.3));
+}
+
+.footer-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  display: inline-block;
+  letter-spacing: 3px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.footer-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--neon-cyan);
+  transition: width 0.3s ease;
+}
+
+.footer-links a:hover { color: var(--neon-cyan); }
+.footer-links a:hover::after { width: 100%; }
+
+.footer-age {
+  display: inline-block;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  border-radius: 8px;
+  color: #ff6666;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 1rem 0;
+  background: rgba(255, 0, 0, 0.05);
+}
+
+footer p { color: var(--text-dim); font-size: 0.85rem; margin-top: 1rem; }
+
+.cart-sidebar {
+  position: fixed;
+  top: 0; right: -100%;
+  width: 100%;
+  max-width: 450px;
+  height: 100vh;
+  background: linear-gradient(180deg, rgba(15,15,25,0.98), rgba(10,10,15,0.98));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid var(--glass-border);
+  z-index: 2000;
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-sidebar.active { right: 0; }
+
+.cart-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-header h2 { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; }
+
+.cart-close {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-close:hover { background: rgba(255,0,0,0.2); }
+
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 2rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cart-empty { text-align: center; padding: 3rem; color: var(--text-dim); }
+
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--glass);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.cart-item img {
+  width: 60px; height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.cart-item-info { flex: 1; min-width: 0; }
+
+.cart-item-name {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-item-price { color: var(--neon-cyan); font-weight: 700; font-size: 0.9rem; }
+
+.cart-item-qty {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty-btn:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+
+.cart-item-remove {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,0,0,0.1);
+  border: 1px solid rgba(255,0,0,0.3);
+  color: #ff4444;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cart-item-remove:hover { background: rgba(255,0,0,0.3); }
+
+.cart-footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.cart-total-label { font-size: 1.1rem; color: var(--text-dim); }
+
+.cart-total-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--neon-cyan);
+}
+
+.order-form input, .order-form textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  -webkit-appearance: none;
+}
+
+.order-form input:focus, .order-form textarea:focus {
+  outline: none;
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+}
+
+.order-form input::placeholder, .order-form textarea::placeholder { color: var(--text-dim); }
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.2));
+  border: 1px solid var(--neon-cyan);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 3000;
+  opacity: 0;
+  transition: all 0.4s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px rgba(0, 240, 255, 0.2);
+  text-align: center;
+  max-width: 90vw;
+  word-break: break-word;
+}
+
+.toast.active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10,10,15,0.95);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.loading-overlay.hidden { display: none; }
+
+.spinner {
+  width: 50px; height: 50px;
+  border: 3px solid rgba(0, 240, 255, 0.2);
+  border-top-color: var(--neon-cyan);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-overlay p {
+  color: var(--text-dim);
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  header { padding: 0.6rem 1rem; }
+  .logo-img { width: 36px; height: 36px; }
+  .logo-text { font-size: 1rem; letter-spacing: 1px; }
+  .hero { padding: 7rem 1rem 3rem; }
+  .hero-title { font-size: 2.8rem; letter-spacing: 3px; }
+  .hero-title::after { font-size: 2.8rem; }
+  .hero-subtitle { font-size: 1rem; letter-spacing: 4px; }
+  .hero p { font-size: 0.95rem; }
+  .categories-grid { grid-template-columns: 1fr; padding: 0 1rem 2rem; gap: 1.2rem; }
+  .cat-card { padding: 2.5rem 1.5rem; min-height: 200px; }
+  .cat-icon-wrap { width: 65px; height: 65px; border-radius: 16px; }
+  .cat-icon { width: 32px; height: 32px; }
+  .cat-card h2 { font-size: 1.3rem; }
+  .cat-card .arrow { font-size: 1.5rem; margin-top: 1.5rem; }
+  .features-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .features-section { padding: 2rem 1rem; }
+  .glass-btn { padding: 0.5rem 1rem; font-size: 0.8rem; }
+  .cart-sidebar { max-width: 100%; }
+  .cart-header { padding: 1rem 1.2rem; }
+  .cart-items { padding: 0.8rem 1.2rem; }
+  .cart-item { padding: 0.8rem; }
+  .cart-item img { width: 50px; height: 50px; }
+  .cart-footer { padding: 1rem 1.2rem; }
+  .cart-total-value { font-size: 1.2rem; }
+  footer { padding: 3rem 1rem 1.5rem; }
+  .footer-links { gap: 1rem; }
+}
+
+@media (max-width: 380px) {
+  .hero-title { font-size: 2.2rem; letter-spacing: 2px; }
+  .hero-title::after { font-size: 2.2rem; }
+  .hero-subtitle { font-size: 0.85rem; letter-spacing: 3px; }
+  .logo-text { font-size: 0.85rem; }
+  .cat-card { padding: 2rem 1rem; min-height: 180px; }
+  .cat-icon-wrap { width: 55px; height: 55px; }
+  .cat-icon { width: 28px; height: 28px; }
+  .cart-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+}
+
+@media (hover: none) {
+  .cat-card:hover { transform: none; }
+  .cat-card:active { transform: scale(0.98); }
+  .glass-btn:hover { transform: none; }
+  .glass-btn:active { transform: scale(0.95); }
+}
+
+::-webkit-scrollbar { width: 6px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--dark-bg); }
+::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
+
+::selection { background: rgba(0, 240, 255, 0.3); color: white; }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p>Загрузка...</p>
+</div>
+
+<div class="smoke-bg"></div>
+<div class="particles" id="particles"></div>
+
+<header>
+  <a href="/" class="logo-wrap">
+    <img src="logo.jpg" alt="Nadega Liquids" class="logo-img">
+    <div class="logo-text">NADEGA <span>LIQUIDS</span></div>
+  </a>
+  <button class="glass-btn cart-btn" onclick="toggleCart()">
+    🛒 Корзина
+    <span class="cart-count" id="cartCount" style="display:none">0</span>
+  </button>
+</header>
+
+<section class="hero">
+  <h1 class="hero-title">NADEGA</h1>
+  <div class="hero-subtitle">LIQUIDS</div>
+  <p>Премиальные жидкости, одноразки и POD-системы</p>
+</section>
+
+<div class="section-divider"></div>
+
+<div class="categories-grid">
+  <a href="/liquids" class="cat-card">
+    <div class="cat-icon-wrap">
+      <svg class="cat-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C12 2 7 8 7 12C7 15.866 9.13401 19 12 19C14.866 19 17 15.866 17 12C17 8 12 2 12 2ZM12 17C10.3431 17 9 14.7614 9 12C9 9.5 11 6 12 4.5C13 6 15 9.5 15 12C15 14.7614 13.6569 17 12 17Z"/>
+        <path d="M12 20C10.3431 20 9 20.8954 9 22H15C15 20.8954 13.6569 20 12 20Z"/>
+      </svg>
+    </div>
+    <h2>Жидкости</h2>
+    <p>Премиальные вкусы для вашего устройства</p>
+    <div class="arrow">→</div>
+  </a>
+  <a href="/disposables" class="cat-card">
+    <div class="cat-icon-wrap">
+      <svg class="cat-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect x="9" y="2" width="6" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="10" y="4" width="4" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1"/>
+        <circle cx="12" cy="8" r="1" fill="currentColor"/>
+        <line x1="12" y1="12" x2="12" y2="16" stroke="currentColor" stroke-width="1"/>
+        <path d="M10 20C10 21.1046 10.8954 22 12 22C13.1046 22 14 21.1046 14 20" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <h2>Одноразки</h2>
+    <p>Модели на любой вкус — просто бери и парь</p>
+    <div class="arrow">→</div>
+  </a>
+  <a href="/pods" class="cat-card">
+    <div class="cat-icon-wrap">
+      <svg class="cat-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="2" width="8" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="9" y="4" width="6" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1"/>
+        <line x1="11" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1"/>
+        <line x1="11" y1="10" x2="13" y2="10" stroke="currentColor" stroke-width="1"/>
+        <rect x="10" y="16" width="4" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 19C8 20.1046 8.89543 21 10 21H14C15.1046 21 16 20.1046 16 19" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="12" cy="17.5" r="0.8" fill="currentColor"/>
+      </svg>
+    </div>
+    <h2>POD-системы</h2>
+    <p>Устройства для настоящего парения</p>
+    <div class="arrow">→</div>
+  </a>
+</div>
+
+<section class="features-section">
+  <div class="features-grid">
+    <div class="feature-item">
+      <svg class="feature-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      <h3>Премиум качество</h3>
+      <p>Только оригинальная продукция от проверенных производителей</p>
+    </div>
+    <div class="feature-item">
+      <svg class="feature-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 6V12L16 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <h3>Быстрая доставка</h3>
+      <p>Доставка по городу в течение 2 часов с момента заказа</p>
+    </div>
+    <div class="feature-item">
+      <svg class="feature-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 12L11 15L16 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h3>Гарантия подлинности</h3>
+      <p>Все товары сертифицированы и имеют оригинальную упаковку</p>
+    </div>
+    <div class="feature-item">
+      <svg class="feature-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="7" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M16 21V5C16 3.89543 15.1046 3 14 3H10C8.89543 3 8 3.89543 8 5V21" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <h3>Широкий выбор</h3>
+      <p>Более 15 позиций жидкостей, одноразок и POD-систем</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">NADEGA LIQUIDS</div>
+  <div class="footer-links">
+    <a href="/">Главная</a>
+    <a href="/liquids">Жидкости</a>
+    <a href="/disposables">Одноразки</a>
+    <a href="/pods">POD-системы</a>
+  </div>
+  <div class="footer-age">🔞 18+ Только для совершеннолетних</div>
+  <p>© 2026 Nadega Liquids. Все права защищены.</p>
+</footer>
+
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h2>🛒 Корзина</h2>
+    <button class="cart-close" onclick="toggleCart()">×</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">Корзина пуста</div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total">
+      <span class="cart-total-label">Итого:</span>
+      <span class="cart-total-value" id="cartTotal">0 ₽</span>
+    </div>
+    <div class="order-form">
+      <input type="text" id="orderName" placeholder="Ваше имя">
+      <input type="tel" id="orderPhone" placeholder="Телефон" inputmode="tel">
+      <input type="text" id="orderAddress" placeholder="Адрес доставки">
+      <textarea id="orderComment" rows="2" placeholder="Комментарий к заказу"></textarea>
+    </div>
+    <button class="glass-btn accent" style="width:100%; padding:1rem; margin-top:0.5rem" onclick="placeOrder()">Оформить заказ</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBFxNFo-EMhwUr4wnWQXiahNO5FDMTjYJ8",
+  authDomain: "nadegaliquids.firebaseapp.com",
+  databaseURL: "https://nadegaliquids-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "nadegaliquids",
+  storageBucket: "nadegaliquids.firebasestorage.app",
+  messagingSenderId: "993975719679",
+  appId: "1:993975719679:web:5fd2d20e2ccb7cca695eca",
+  measurementId: "G-R7MD054PZG"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let cart = JSON.parse(localStorage.getItem('nadega_cart') || '[]');
+
+function saveCart() {
+  localStorage.setItem('nadega_cart', JSON.stringify(cart));
+}
+
+function updateCart() {
+  const countEl = document.getElementById('cartCount');
+  const totalItems = cart.reduce((s, i) => s + i.qty, 0);
+  countEl.textContent = totalItems;
+  countEl.style.display = totalItems > 0 ? 'flex' : 'none';
+
+  const itemsContainer = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+
+  if (cart.length === 0) {
+    itemsContainer.innerHTML = '<div class="cart-empty">Корзина пуста</div>';
+    footer.style.display = 'none';
+    return;
+  }
+
+  footer.style.display = 'block';
+  itemsContainer.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img src="${item.image}" alt="${item.name}" loading="lazy">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">${(item.price * item.qty).toLocaleString('ru-RU')} ₽</div>
+      </div>
+      <div class="cart-item-qty">
+        <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+        <span>${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart(${item.id})">×</button>
+    </div>
+  `).join('');
+
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('cartTotal').textContent = total.toLocaleString('ru-RU') + ' ₽';
+}
+
+window.changeQty = function(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+  saveCart();
+  updateCart();
+};
+
+window.removeFromCart = function(id) {
+  cart = cart.filter(i => i.id !== id);
+  saveCart();
+  updateCart();
+};
+
+window.toggleCart = function() {
+  const sidebar = document.getElementById('cartSidebar');
+  sidebar.classList.toggle('active');
+  document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+};
+
+window.placeOrder = function() {
+  const name = document.getElementById('orderName').value.trim();
+  const phone = document.getElementById('orderPhone').value.trim();
+  const address = document.getElementById('orderAddress').value.trim();
+
+  if (!name || !phone || !address) {
+    showToast('Заполните все обязательные поля');
+    return;
+  }
+
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const items = cart.map(i => `${i.name} x${i.qty} (${(i.price * i.qty).toLocaleString('ru-RU')}₽)`).join('\n');
+  const comment = document.getElementById('orderComment').value.trim();
+
+  const message = `🛒 *Заказ с Nadega Liquids*\n\n` +
+    `👤 *Имя:* ${name}\n` +
+    `📞 *Телефон:* ${phone}\n` +
+    `📍 *Адрес:* ${address}\n` +
+    (comment ? `💬 *Комментарий:* ${comment}\n` : '') +
+    `\n📦 *Товары:*\n${items}\n\n` +
+    `💰 *Итого:* ${total.toLocaleString('ru-RU')} ₽`;
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(message).then(() => {
+      showToast('Заказ скопирован! Отправьте в Telegram');
+    }).catch(() => {
+      showToast(`Заказ оформлен! Сумма: ${total.toLocaleString('ru-RU')} ₽`);
+    });
+  } else {
+    showToast(`Заказ оформлен! Сумма: ${total.toLocaleString('ru-RU')} ₽`);
+  }
+
+  cart = [];
+  saveCart();
+  updateCart();
+  toggleCart();
+  document.getElementById('orderName').value = '';
+  document.getElementById('orderPhone').value = '';
+  document.getElementById('orderAddress').value = '';
+  document.getElementById('orderComment').value = '';
+};
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('active');
+  setTimeout(() => toast.classList.remove('active'), 3000);
+}
+
+function createParticles() {
+  const container = document.getElementById('particles');
+  const count = window.innerWidth < 768 ? 15 : 30;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (Math.random() * 10 + 10) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.width = (Math.random() * 3 + 2) + 'px';
+    p.style.height = p.style.width;
+    const colors = ['var(--neon-cyan)', 'var(--neon-pink)', 'var(--neon-purple)'];
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.boxShadow = `0 0 ${Math.random() * 10 + 5}px ${p.style.background}`;
+    container.appendChild(p);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  createParticles();
+  updateCart();
+  document.getElementById('loadingOverlay').classList.add('hidden');
+
+  let touchStartX = 0;
+  const cartSidebar = document.getElementById('cartSidebar');
+  cartSidebar.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+  }, {passive: true});
+
+  cartSidebar.addEventListener('touchend', e => {
+    const diff = e.changedTouches[0].clientX - touchStartX;
+    if (diff > 80) toggleCart();
+  }, {passive: true});
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('cartSidebar').classList.contains('active')) {
+      toggleCart();
+    }
+  }
+});
+</script>
+</body>
+</html>
