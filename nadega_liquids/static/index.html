@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nadega Liquids — Премиум вейп-магазин</title>
+<link rel="icon" type="image/jpeg" href="logo.jpg">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --neon-cyan: #00f0ff;
+  --neon-pink: #ff00aa;
+  --neon-purple: #8b5cf6;
+  --dark-bg: #0a0a0f;
+  --card-bg: rgba(20, 20, 35, 0.6);
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --text: #e0e0e0;
+  --text-dim: #888;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--dark-bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.smoke-bg {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: -1;
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(255, 0, 170, 0.08) 0%, transparent 50%),
+    linear-gradient(180deg, #0a0a0f 0%, #0f0f1a 50%, #0a0a0f 100%);
+  overflow: hidden;
+}
+
+.smoke-bg::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(0, 240, 255, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(255, 0, 170, 0.03) 0%, transparent 40%);
+  animation: smokeMove 20s ease-in-out infinite;
+}
+
+@keyframes smokeMove {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5%, 3%) rotate(2deg); }
+  50% { transform: translate(-3%, 5%) rotate(-1deg); }
+  75% { transform: translate(2%, -2%) rotate(1deg); }
+}
+
+.particles {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 4px; height: 4px;
+  background: var(--neon-cyan);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: floatUp linear infinite;
+  box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 0.3; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+}
+
+/* === HEADER === */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0.8rem 1.5rem;
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  text-decoration: none;
+}
+
+.logo-img {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.logo-wrap:hover .logo-img {
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+  border-color: var(--neon-cyan);
+}
+
+.logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+  letter-spacing: 2px;
+}
+
+.logo-text span { font-weight: 400; opacity: 0.8; }
+
+/* === GLASSMORPHISM BUTTONS === */
+.glass-btn {
+  position: relative;
+  padding: 0.7rem 1.8rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 
+    0 4px 15px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    0 0 20px rgba(0, 240, 255, 0.1);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.glass-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.glass-btn:hover::before {
+  left: 100%;
+}
+
+.glass-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 25px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    0 0 30px rgba(0, 240, 255, 0.2);
+  border-color: rgba(0, 240, 255, 0.4);
+}
+
+.glass-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.glass-btn.accent {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.15));
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+.glass-btn.accent:hover {
+  box-shadow: 
+    0 8px 25px rgba(0,0,0,0.4),
+    0 0 40px rgba(0, 240, 255, 0.3),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+/* Cart button with text */
+.cart-btn {
+  position: relative;
+  padding: 0.7rem 1.2rem;
+}
+
+.cart-count {
+  position: absolute;
+  top: -5px; right: -5px;
+  width: 22px; height: 22px;
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
+}
+
+/* === HERO SECTION (text only with glow) === */
+.hero {
+  padding: 7rem 1.5rem 3rem;
+  text-align: center;
+  position: relative;
+}
+
+.hero-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textGlow 3s ease-in-out infinite alternate;
+  letter-spacing: 4px;
+  line-height: 1.2;
+}
+
+.hero-title span {
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+@keyframes textGlow {
+  0% {
+    filter: brightness(1);
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.3), 0 0 40px rgba(0, 240, 255, 0.2), 0 0 60px rgba(139, 92, 246, 0.1);
+  }
+  100% {
+    filter: brightness(1.3);
+    text-shadow: 0 0 30px rgba(0, 240, 255, 0.5), 0 0 60px rgba(0, 240, 255, 0.3), 0 0 90px rgba(139, 92, 246, 0.2), 0 0 120px rgba(255, 0, 170, 0.1);
+  }
+}
+
+.hero p {
+  font-size: 1rem;
+  color: var(--text-dim);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* === CATEGORY BUTTONS GRID === */
+.categories-grid {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.cat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background: var(--card-bg);
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  text-decoration: none;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.cat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 24px;
+  padding: 1px;
+  background: linear-gradient(135deg, transparent, rgba(0, 240, 255, 0.15), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.cat-card:hover::before {
+  opacity: 1;
+}
+
+.cat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 40px rgba(0, 240, 255, 0.15);
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+.cat-card:active {
+  transform: scale(0.98);
+}
+
+.cat-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.cat-card h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.cat-card p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.cat-card .arrow {
+  margin-top: 1.5rem;
+  font-size: 1.5rem;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.cat-card:hover .arrow {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
+/* === FOOTER === */
+footer {
+  padding: 3rem 2rem;
+  text-align: center;
+  border-top: 1px solid var(--glass-border);
+  margin-top: 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+footer p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+footer .logo-text {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+/* === CART SIDEBAR === */
+.cart-sidebar {
+  position: fixed;
+  top: 0; right: -100%;
+  width: 100%;
+  max-width: 450px;
+  height: 100vh;
+  background: linear-gradient(180deg, rgba(15,15,25,0.98), rgba(10,10,15,0.98));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid var(--glass-border);
+  z-index: 2000;
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-sidebar.active {
+  right: 0;
+}
+
+.cart-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-header h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+}
+
+.cart-close {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-close:hover {
+  background: rgba(255,0,0,0.2);
+}
+
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 2rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cart-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-dim);
+}
+
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--glass);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.cart-item img {
+  width: 60px; height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.cart-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cart-item-name {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-item-price {
+  color: var(--neon-cyan);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.cart-item-qty {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty-btn:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.cart-item-remove {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,0,0,0.1);
+  border: 1px solid rgba(255,0,0,0.3);
+  color: #ff4444;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cart-item-remove:hover {
+  background: rgba(255,0,0,0.3);
+}
+
+.cart-footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.cart-total-label {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+}
+
+.cart-total-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--neon-cyan);
+}
+
+.order-form input, .order-form textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  -webkit-appearance: none;
+}
+
+.order-form input:focus, .order-form textarea:focus {
+  outline: none;
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+}
+
+.order-form input::placeholder, .order-form textarea::placeholder {
+  color: var(--text-dim);
+}
+
+/* === TOAST === */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.2));
+  border: 1px solid var(--neon-cyan);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 3000;
+  opacity: 0;
+  transition: all 0.4s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 20px rgba(0, 240, 255, 0.2);
+  text-align: center;
+  max-width: 90vw;
+  word-break: break-word;
+}
+
+.toast.active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ======================== */
+/* === MOBILE ADAPTIVE === */
+/* ======================== */
+
+@media (max-width: 768px) {
+  header {
+    padding: 0.6rem 1rem;
+  }
+
+  .logo-img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .logo-text {
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+
+  .hero {
+    padding: 6rem 1rem 2rem;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+    letter-spacing: 2px;
+  }
+
+  .hero p {
+    font-size: 0.9rem;
+  }
+
+  .categories-grid {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .cat-card {
+    padding: 2rem 1.5rem;
+    min-height: 160px;
+  }
+
+  .cat-icon {
+    font-size: 2.5rem;
+  }
+
+  .cat-card h2 {
+    font-size: 1.2rem;
+  }
+
+  .glass-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  /* Cart */
+  .cart-sidebar {
+    max-width: 100%;
+  }
+
+  .cart-header {
+    padding: 1rem 1.2rem;
+  }
+
+  .cart-items {
+    padding: 0.8rem 1.2rem;
+  }
+
+  .cart-item {
+    padding: 0.8rem;
+  }
+
+  .cart-item img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .cart-footer {
+    padding: 1rem 1.2rem;
+  }
+
+  .cart-total-value {
+    font-size: 1.2rem;
+  }
+
+  footer {
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .hero-title {
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+  }
+
+  .logo-text {
+    font-size: 0.85rem;
+  }
+
+  .cat-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .cat-icon {
+    font-size: 2rem;
+  }
+
+  .cart-btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (hover: none) {
+  .cat-card:hover {
+    transform: none;
+  }
+
+  .cat-card:active {
+    transform: scale(0.98);
+  }
+
+  .glass-btn:hover {
+    transform: none;
+  }
+
+  .glass-btn:active {
+    transform: scale(0.95);
+  }
+}
+
+::-webkit-scrollbar { width: 6px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--dark-bg); }
+::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
+
+::selection {
+  background: rgba(0, 240, 255, 0.3);
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="smoke-bg"></div>
+<div class="particles" id="particles"></div>
+
+<!-- Header -->
+<header>
+  <a href="index.html" class="logo-wrap">
+    <img src="logo.jpg" alt="Nadega Liquids" class="logo-img">
+    <div class="logo-text">NADEGA <span>LIQUIDS</span></div>
+  </a>
+  <button class="glass-btn cart-btn" onclick="toggleCart()">
+    🛒 Корзина
+    <span class="cart-count" id="cartCount" style="display:none">0</span>
+  </button>
+</header>
+
+<!-- Hero (text only with neon glow) -->
+<section class="hero">
+  <h1 class="hero-title">NADEGA <span>LIQUIDS</span></h1>
+  <p>Премиальные жидкости, одноразки и POD-системы</p>
+</section>
+
+<!-- Category Buttons -->
+<div class="categories-grid">
+  <a href="liquids.html" class="cat-card">
+    <div class="cat-icon">💧</div>
+    <h2>Жидкости</h2>
+    <p>5 премиальных вкусов</p>
+    <div class="arrow">→</div>
+  </a>
+  <a href="disposables.html" class="cat-card">
+    <div class="cat-icon">🚬</div>
+    <h2>Одноразки</h2>
+    <p>5 моделей на любой вкус</p>
+    <div class="arrow">→</div>
+  </a>
+  <a href="pods.html" class="cat-card">
+    <div class="cat-icon">🔋</div>
+    <h2>POD-системы</h2>
+    <p>5 устройств для парения</p>
+    <div class="arrow">→</div>
+  </a>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="logo-text">NADEGA <span>LIQUIDS</span></div>
+  <p>© 2026 Nadega Liquids. Все права защищены. 18+</p>
+</footer>
+
+<!-- Cart Sidebar -->
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h2>🛒 Корзина</h2>
+    <button class="cart-close" onclick="toggleCart()">×</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">Корзина пуста</div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total">
+      <span class="cart-total-label">Итого:</span>
+      <span class="cart-total-value" id="cartTotal">0 ₽</span>
+    </div>
+    <div class="order-form">
+      <input type="text" id="orderName" placeholder="Ваше имя">
+      <input type="tel" id="orderPhone" placeholder="Телефон" inputmode="tel">
+      <input type="text" id="orderAddress" placeholder="Адрес доставки">
+      <textarea id="orderComment" rows="2" placeholder="Комментарий к заказу"></textarea>
+    </div>
+    <button class="glass-btn accent" style="width:100%; padding:1rem; margin-top:0.5rem" onclick="placeOrder()">Оформить заказ</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== CART (shared across pages via localStorage) =====
+let cart = JSON.parse(localStorage.getItem('nadega_cart') || '[]');
+
+function saveCart() {
+  localStorage.setItem('nadega_cart', JSON.stringify(cart));
+}
+
+function updateCart() {
+  const countEl = document.getElementById('cartCount');
+  const totalItems = cart.reduce((s, i) => s + i.qty, 0);
+  countEl.textContent = totalItems;
+  countEl.style.display = totalItems > 0 ? 'flex' : 'none';
+
+  const itemsContainer = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+
+  if (cart.length === 0) {
+    itemsContainer.innerHTML = '<div class="cart-empty">Корзина пуста</div>';
+    footer.style.display = 'none';
+    return;
+  }
+
+  footer.style.display = 'block';
+  itemsContainer.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img src="${item.image}" alt="${item.name}" loading="lazy">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">${(item.price * item.qty).toLocaleString('ru-RU')} ₽</div>
+      </div>
+      <div class="cart-item-qty">
+        <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+        <span>${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart(${item.id})">×</button>
+    </div>
+  `).join('');
+
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('cartTotal').textContent = total.toLocaleString('ru-RU') + ' ₽';
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.id !== id);
+  }
+  saveCart();
+  updateCart();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(i => i.id !== id);
+  saveCart();
+  updateCart();
+}
+
+function toggleCart() {
+  const sidebar = document.getElementById('cartSidebar');
+  sidebar.classList.toggle('active');
+  document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+}
+
+function placeOrder() {
+  const name = document.getElementById('orderName').value.trim();
+  const phone = document.getElementById('orderPhone').value.trim();
+  const address = document.getElementById('orderAddress').value.trim();
+
+  if (!name || !phone || !address) {
+    showToast('Заполните все обязательные поля');
+    return;
+  }
+
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const items = cart.map(i => `${i.name} x${i.qty} (${(i.price * i.qty).toLocaleString('ru-RU')}₽)`).join('\n');
+  const comment = document.getElementById('orderComment').value.trim();
+
+  const message = `🛒 *Заказ с Nadega Liquids*\n\n` +
+    `👤 *Имя:* ${name}\n` +
+    `📞 *Телефон:* ${phone}\n` +
+    `📍 *Адрес:* ${address}\n` +
+    (comment ? `💬 *Комментарий:* ${comment}\n` : '') +
+    `\n📦 *Товары:*\n${items}\n\n` +
+    `💰 *Итого:* ${total.toLocaleString('ru-RU')} ₽`;
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(message).then(() => {
+      showToast('Заказ скопирован! Отправьте в Telegram');
+    }).catch(() => {
+      showToast(`Заказ оформлен! Сумма: ${total.toLocaleString('ru-RU')} ₽`);
+    });
+  } else {
+    showToast(`Заказ оформлен! Сумма: ${total.toLocaleString('ru-RU')} ₽`);
+  }
+
+  cart = [];
+  saveCart();
+  updateCart();
+  toggleCart();
+  document.getElementById('orderName').value = '';
+  document.getElementById('orderPhone').value = '';
+  document.getElementById('orderAddress').value = '';
+  document.getElementById('orderComment').value = '';
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('active');
+  setTimeout(() => toast.classList.remove('active'), 3000);
+}
+
+// ===== PARTICLES =====
+function createParticles() {
+  const container = document.getElementById('particles');
+  const count = window.innerWidth < 768 ? 15 : 30;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (Math.random() * 10 + 10) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.width = (Math.random() * 3 + 2) + 'px';
+    p.style.height = p.style.width;
+    const colors = ['var(--neon-cyan)', 'var(--neon-pink)', 'var(--neon-purple)'];
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.boxShadow = `0 0 ${Math.random() * 10 + 5}px ${p.style.background}`;
+    container.appendChild(p);
+  }
+}
+
+// Swipe to close cart
+let touchStartX = 0;
+document.addEventListener('DOMContentLoaded', () => {
+  createParticles();
+  updateCart();
+
+  const cartSidebar = document.getElementById('cartSidebar');
+  cartSidebar.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+  }, {passive: true});
+
+  cartSidebar.addEventListener('touchend', e => {
+    const diff = e.changedTouches[0].clientX - touchStartX;
+    if (diff > 80) toggleCart();
+  }, {passive: true});
+});
+
+// Escape to close
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('cartSidebar').classList.contains('active')) {
+      toggleCart();
+    }
+  }
+});
+</script>
+</body>
+</html>
