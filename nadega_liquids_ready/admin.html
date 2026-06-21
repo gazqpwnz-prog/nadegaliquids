@@ -547,63 +547,62 @@ window.addProduct = async function() {
     createdAt: new Date().toISOString()
   };
 
+  // Сохраняем в localStorage всегда (основное хранилище)
+  let backup = JSON.parse(localStorage.getItem('nadega_products_backup') || '[]');
+  const localId = Date.now().toString();
+  backup.push({ id: localId, ...productData });
+  localStorage.setItem('nadega_products_backup', JSON.stringify(backup));
+
+  // Очистка формы
+  document.getElementById('pName').value = '';
+  document.getElementById('pPrice').value = '';
+  document.getElementById('pDesc').value = '';
+  document.getElementById('pImage').value = '';
+  document.getElementById('pNicotine').value = '';
+  document.getElementById('pVolume').value = '';
+  document.getElementById('pPuffs').value = '';
+  document.getElementById('pFlavor').value = '';
+  document.getElementById('pBattery').value = '';
+  document.getElementById('pPower').value = '';
+
+  showToast('Товар добавлен!');
+
+  // Также пробуем сохранить в Firebase (необязательно)
   try {
-    await addDoc(collection(db, "products"), productData);
-    showToast('Товар добавлен в Firebase!');
-
-    // Также сохраняем в localStorage как backup
-    let backup = JSON.parse(localStorage.getItem('nadega_products_backup') || '[]');
-    backup.push({ id: Date.now().toString(), ...productData });
-    localStorage.setItem('nadega_products_backup', JSON.stringify(backup));
-
-    // Очистка формы
-    document.getElementById('pName').value = '';
-    document.getElementById('pPrice').value = '';
-    document.getElementById('pDesc').value = '';
-    document.getElementById('pImage').value = '';
-    document.getElementById('pNicotine').value = '';
-    document.getElementById('pVolume').value = '';
-    document.getElementById('pPuffs').value = '';
-    document.getElementById('pFlavor').value = '';
-    document.getElementById('pBattery').value = '';
-    document.getElementById('pPower').value = '';
+    await addDoc(collection(db, "products"), { ...productData, localId });
   } catch (e) {
-    console.error(e);
-    showToast('Ошибка: ' + e.message);
+    console.warn('Firebase недоступен, товар сохранён локально:', e.message);
   }
 };
 
 async function loadProducts() {
+  const list = document.getElementById('productList');
   try {
-    const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
-    const snapshot = await getDocs(q);
-    const list = document.getElementById('productList');
+    const localProducts = JSON.parse(localStorage.getItem('nadega_products_backup') || '[]');
 
-    if (snapshot.empty) {
-      list.innerHTML = '<div style="text-align:center; color: var(--text-dim); padding: 2rem;">Нет товаров в базе</div>';
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      return;
+    if (localProducts.length === 0) {
+      list.innerHTML = '<div style="text-align:center; color: var(--text-dim); padding: 2rem;">Нет товаров. Добавьте первый!</div>';
+    } else {
+      const sorted = [...localProducts].sort((a, b) => b.createdAt > a.createdAt ? 1 : -1);
+      list.innerHTML = '';
+      sorted.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'product-item';
+        item.innerHTML = `
+          <div class="product-item-info">
+            <h4>${p.name}</h4>
+            <span>${p.category} — ${p.price} ₽</span>
+          </div>
+          <div class="product-item-actions">
+            <button class="icon-btn danger" onclick="deleteProduct('${p.id}')">🗑</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
     }
-
-    list.innerHTML = '';
-    snapshot.forEach(doc => {
-      const p = doc.data();
-      const item = document.createElement('div');
-      item.className = 'product-item';
-      item.innerHTML = `
-        <div class="product-item-info">
-          <h4>${p.name}</h4>
-          <span>${p.category} — ${p.price} ₽</span>
-        </div>
-        <div class="product-item-actions">
-          <button class="icon-btn danger" onclick="deleteProduct('${doc.id}')">🗑</button>
-        </div>
-      `;
-      list.appendChild(item);
-    });
   } catch (e) {
     console.error(e);
-    document.getElementById('productList').innerHTML = '<div style="text-align:center; color: var(--text-dim); padding: 2rem;">Ошибка загрузки из Firebase</div>';
+    list.innerHTML = '<div style="text-align:center; color: var(--text-dim); padding: 2rem;">Ошибка загрузки</div>';
   } finally {
     document.getElementById('loadingOverlay').classList.add('hidden');
   }
@@ -611,12 +610,17 @@ async function loadProducts() {
 
 window.deleteProduct = async function(id) {
   if (!confirm('Удалить товар?')) return;
+  let backup = JSON.parse(localStorage.getItem('nadega_products_backup') || '[]');
+  backup = backup.filter(p => p.id !== id);
+  localStorage.setItem('nadega_products_backup', JSON.stringify(backup));
+  showToast('Товар удалён');
+  loadProducts();
+
+  // Пробуем удалить из Firebase тоже
   try {
     await deleteDoc(doc(db, "products", id));
-    showToast('Товар удалён');
-    loadProducts();
   } catch (e) {
-    showToast('Ошибка удаления');
+    console.warn('Firebase: не удалось удалить', e.message);
   }
 };
 
@@ -630,6 +634,9 @@ function showToast(msg) {
 document.getElementById('adminPassword').addEventListener('keypress', e => {
   if (e.key === 'Enter') login();
 });
+
+// Скрываем оверлей сразу — он нужен только для загрузки данных
+document.getElementById('loadingOverlay').classList.add('hidden');
 </script>
 </body>
 </html>
