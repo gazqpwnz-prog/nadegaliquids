@@ -547,11 +547,25 @@ window.addProduct = async function() {
     createdAt: new Date().toISOString()
   };
 
-  // Сохраняем в localStorage всегда (основное хранилище)
-  let backup = JSON.parse(localStorage.getItem('nadega_products_backup') || '[]');
-  const localId = Date.now().toString();
-  backup.push({ id: localId, ...productData });
-  localStorage.setItem('nadega_products_backup', JSON.stringify(backup));
+  try {
+    // Сохраняем в Firebase (основное хранилище)
+    const docRef = await addDoc(collection(db, "products"), productData);
+
+    // Резервная копия в localStorage
+    let backup = JSON.parse(localStorage.getItem('nadega_products_backup') || '[]');
+    backup.push({ id: docRef.id, ...productData });
+    localStorage.setItem('nadega_products_backup', JSON.stringify(backup));
+
+    showToast('Товар добавлен в Firebase!');
+  } catch (e) {
+    console.error('Ошибка Firebase:', e);
+    // Если Firebase недоступен — сохраняем только локально
+    let backup = JSON.parse(localStorage.getItem('nadega_products_backup') || '[]');
+    const localId = Date.now().toString();
+    backup.push({ id: localId, ...productData });
+    localStorage.setItem('nadega_products_backup', JSON.stringify(backup));
+    showToast('Сохранено локально (Firebase недоступен)');
+  }
 
   // Очистка формы
   document.getElementById('pName').value = '';
@@ -564,22 +578,39 @@ window.addProduct = async function() {
   document.getElementById('pFlavor').value = '';
   document.getElementById('pBattery').value = '';
   document.getElementById('pPower').value = '';
-
-  showToast('Товар добавлен!');
-
-  // Также пробуем сохранить в Firebase (необязательно)
-  try {
-    await addDoc(collection(db, "products"), { ...productData, localId });
-  } catch (e) {
-    console.warn('Firebase недоступен, товар сохранён локально:', e.message);
-  }
 };
 
 async function loadProducts() {
   const list = document.getElementById('productList');
   try {
-    const localProducts = JSON.parse(localStorage.getItem('nadega_products_backup') || '[]');
+    // Загружаем из Firebase (основное хранилище)
+    const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
 
+    if (snapshot.empty) {
+      list.innerHTML = '<div style="text-align:center; color: var(--text-dim); padding: 2rem;">Нет товаров. Добавьте первый!</div>';
+    } else {
+      list.innerHTML = '';
+      snapshot.forEach(docSnap => {
+        const p = docSnap.data();
+        const item = document.createElement('div');
+        item.className = 'product-item';
+        item.innerHTML = `
+          <div class="product-item-info">
+            <h4>${p.name}</h4>
+            <span>${p.category} — ${p.price} ₽</span>
+          </div>
+          <div class="product-item-actions">
+            <button class="icon-btn danger" onclick="deleteProduct('${docSnap.id}')">🗑</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+  } catch (e) {
+    console.error('Firebase ошибка, загружаем из localStorage:', e);
+    // Резерв: localStorage
+    const localProducts = JSON.parse(localStorage.getItem('nadega_products_backup') || '[]');
     if (localProducts.length === 0) {
       list.innerHTML = '<div style="text-align:center; color: var(--text-dim); padding: 2rem;">Нет товаров. Добавьте первый!</div>';
     } else {
@@ -600,9 +631,6 @@ async function loadProducts() {
         list.appendChild(item);
       });
     }
-  } catch (e) {
-    console.error(e);
-    list.innerHTML = '<div style="text-align:center; color: var(--text-dim); padding: 2rem;">Ошибка загрузки</div>';
   } finally {
     document.getElementById('loadingOverlay').classList.add('hidden');
   }
@@ -610,18 +638,19 @@ async function loadProducts() {
 
 window.deleteProduct = async function(id) {
   if (!confirm('Удалить товар?')) return;
+  try {
+    // Удаляем из Firebase (основное хранилище)
+    await deleteDoc(doc(db, "products", id));
+    showToast('Товар удалён');
+  } catch (e) {
+    console.warn('Firebase: не удалось удалить, удаляем локально:', e.message);
+    showToast('Удалено локально');
+  }
+  // Также удаляем из localStorage
   let backup = JSON.parse(localStorage.getItem('nadega_products_backup') || '[]');
   backup = backup.filter(p => p.id !== id);
   localStorage.setItem('nadega_products_backup', JSON.stringify(backup));
-  showToast('Товар удалён');
   loadProducts();
-
-  // Пробуем удалить из Firebase тоже
-  try {
-    await deleteDoc(doc(db, "products", id));
-  } catch (e) {
-    console.warn('Firebase: не удалось удалить', e.message);
-  }
 };
 
 function showToast(msg) {
